@@ -91,9 +91,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\OriginalTreasureBack.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\dungeon-back.png" />
   </ItemGroup>
   <ItemGroup>

@@ -32,24 +32,43 @@
             System.Windows.Forms.Label label1;
             System.Windows.Forms.Label label2;
             this.cardListBox = new System.Windows.Forms.ListBox();
-            this.cardPictureBox = new System.Windows.Forms.PictureBox();
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.cardTitleTextBox = new System.Windows.Forms.TextBox();
-            this.cardDescriptionTextBox = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.cardStyleComboBox = new System.Windows.Forms.ComboBox();
             this.cardListBoxContextStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addCardCtxItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteCardCtxItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cardPictureBox = new System.Windows.Forms.PictureBox();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.cardStyleComboBox = new System.Windows.Forms.ComboBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.cardDescriptionTextBox = new System.Windows.Forms.TextBox();
+            this.cardTitleTextBox = new System.Windows.Forms.TextBox();
+            this.cardDisplayTimer = new System.Windows.Forms.Timer(this.components);
             label1 = new System.Windows.Forms.Label();
             label2 = new System.Windows.Forms.Label();
+            this.cardListBoxContextStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cardPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            this.cardListBoxContextStrip.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(5, 373);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(52, 13);
+            label1.TabIndex = 1;
+            label1.Text = "Card Title";
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new System.Drawing.Point(5, 402);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(85, 13);
+            label2.TabIndex = 3;
+            label2.Text = "Card Description";
             // 
             // cardListBox
             // 
@@ -63,6 +82,28 @@
             this.cardListBox.Size = new System.Drawing.Size(462, 550);
             this.cardListBox.TabIndex = 0;
             this.cardListBox.SelectedValueChanged += new System.EventHandler(this.cardListBox_SelectedValueChanged);
+            // 
+            // cardListBoxContextStrip
+            // 
+            this.cardListBoxContextStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addCardCtxItem,
+            this.deleteCardCtxItem});
+            this.cardListBoxContextStrip.Name = "cardListBoxContextStrip";
+            this.cardListBoxContextStrip.Size = new System.Drawing.Size(125, 48);
+            this.cardListBoxContextStrip.Opening += new System.ComponentModel.CancelEventHandler(this.cardListBoxContextStrip_Opening);
+            // 
+            // addCardCtxItem
+            // 
+            this.addCardCtxItem.Name = "addCardCtxItem";
+            this.addCardCtxItem.Size = new System.Drawing.Size(124, 22);
+            this.addCardCtxItem.Text = "Add Card";
+            this.addCardCtxItem.Click += new System.EventHandler(this.addCardToolStripMenuItem_Click);
+            // 
+            // deleteCardCtxItem
+            // 
+            this.deleteCardCtxItem.Name = "deleteCardCtxItem";
+            this.deleteCardCtxItem.Size = new System.Drawing.Size(124, 22);
+            this.deleteCardCtxItem.Text = "Delete";
             // 
             // cardPictureBox
             // 
@@ -98,38 +139,13 @@
             this.splitContainer1.SplitterDistance = 470;
             this.splitContainer1.TabIndex = 1;
             // 
-            // label1
+            // cardStyleComboBox
             // 
-            label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(5, 373);
-            label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(52, 13);
-            label1.TabIndex = 1;
-            label1.Text = "Card Title";
-            // 
-            // cardTitleTextBox
-            // 
-            this.cardTitleTextBox.Location = new System.Drawing.Point(63, 370);
-            this.cardTitleTextBox.Name = "cardTitleTextBox";
-            this.cardTitleTextBox.Size = new System.Drawing.Size(236, 20);
-            this.cardTitleTextBox.TabIndex = 2;
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Location = new System.Drawing.Point(5, 402);
-            label2.Name = "label2";
-            label2.Size = new System.Drawing.Size(85, 13);
-            label2.TabIndex = 3;
-            label2.Text = "Card Description";
-            // 
-            // cardDescriptionTextBox
-            // 
-            this.cardDescriptionTextBox.Location = new System.Drawing.Point(96, 399);
-            this.cardDescriptionTextBox.Multiline = true;
-            this.cardDescriptionTextBox.Name = "cardDescriptionTextBox";
-            this.cardDescriptionTextBox.Size = new System.Drawing.Size(203, 76);
-            this.cardDescriptionTextBox.TabIndex = 4;
+            this.cardStyleComboBox.FormattingEnabled = true;
+            this.cardStyleComboBox.Location = new System.Drawing.Point(63, 482);
+            this.cardStyleComboBox.Name = "cardStyleComboBox";
+            this.cardStyleComboBox.Size = new System.Drawing.Size(236, 21);
+            this.cardStyleComboBox.TabIndex = 6;
             // 
             // label3
             // 
@@ -140,35 +156,24 @@
             this.label3.TabIndex = 5;
             this.label3.Text = "Card Style";
             // 
-            // cardStyleComboBox
+            // cardDescriptionTextBox
             // 
-            this.cardStyleComboBox.FormattingEnabled = true;
-            this.cardStyleComboBox.Location = new System.Drawing.Point(63, 482);
-            this.cardStyleComboBox.Name = "cardStyleComboBox";
-            this.cardStyleComboBox.Size = new System.Drawing.Size(236, 21);
-            this.cardStyleComboBox.TabIndex = 6;
+            this.cardDescriptionTextBox.Location = new System.Drawing.Point(96, 399);
+            this.cardDescriptionTextBox.Multiline = true;
+            this.cardDescriptionTextBox.Name = "cardDescriptionTextBox";
+            this.cardDescriptionTextBox.Size = new System.Drawing.Size(203, 76);
+            this.cardDescriptionTextBox.TabIndex = 4;
             // 
-            // cardListBoxContextStrip
+            // cardTitleTextBox
             // 
-            this.cardListBoxContextStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addCardCtxItem,
-            this.deleteCardCtxItem});
-            this.cardListBoxContextStrip.Name = "cardListBoxContextStrip";
-            this.cardListBoxContextStrip.Size = new System.Drawing.Size(125, 48);
-            this.cardListBoxContextStrip.Opening += new System.ComponentModel.CancelEventHandler(this.cardListBoxContextStrip_Opening);
+            this.cardTitleTextBox.Location = new System.Drawing.Point(63, 370);
+            this.cardTitleTextBox.Name = "cardTitleTextBox";
+            this.cardTitleTextBox.Size = new System.Drawing.Size(236, 20);
+            this.cardTitleTextBox.TabIndex = 2;
             // 
-            // addCardCtxItem
+            // cardDisplayTimer
             // 
-            this.addCardCtxItem.Name = "addCardCtxItem";
-            this.addCardCtxItem.Size = new System.Drawing.Size(180, 22);
-            this.addCardCtxItem.Text = "Add Card";
-            this.addCardCtxItem.Click += new System.EventHandler(this.addCardToolStripMenuItem_Click);
-            // 
-            // deleteCardCtxItem
-            // 
-            this.deleteCardCtxItem.Name = "deleteCardCtxItem";
-            this.deleteCardCtxItem.Size = new System.Drawing.Size(180, 22);
-            this.deleteCardCtxItem.Text = "Delete";
+            this.cardDisplayTimer.Interval = 500;
             // 
             // MainForm
             // 
@@ -178,13 +183,13 @@
             this.Controls.Add(this.splitContainer1);
             this.Name = "MainForm";
             this.Text = "Card Editor";
+            this.cardListBoxContextStrip.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.cardPictureBox)).EndInit();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            this.cardListBoxContextStrip.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -201,6 +206,7 @@
         private System.Windows.Forms.ContextMenuStrip cardListBoxContextStrip;
         private System.Windows.Forms.ToolStripMenuItem addCardCtxItem;
         private System.Windows.Forms.ToolStripMenuItem deleteCardCtxItem;
+        private System.Windows.Forms.Timer cardDisplayTimer;
     }
 }
 

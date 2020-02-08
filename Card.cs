@@ -37,10 +37,15 @@ namespace munchkin_card_editor
             Bitmap img = (Bitmap)GetBaseFrontImage().Clone();
             using (Graphics g = Graphics.FromImage(img))
             {
-                using(Font font = new Font("Quasimodo", 24))
+                using (Font font = new Font("Quasimodo", 32))
                 {
-                    PointF titlePos = new PointF(img.Width/2-g.MeasureString(card.Title, font).Width/2, 35);
+                    PointF titlePos = new PointF(img.Width / 2 - g.MeasureString(card.Title, font).Width / 2, 35);
                     g.DrawString(card.Title, font, new SolidBrush(Color.FromArgb(78, 29, 24)), titlePos);
+                }
+                using (Font font = new Font("Quasimodo", 16))
+                {
+                    RectangleF descriptionRect = new RectangleF(35, 100, img.Width - 70, img.Height);
+                    g.DrawString(card.Description, font, new SolidBrush(Color.FromArgb(78, 29, 24)), descriptionRect);
                 }
             }
 
@@ -59,7 +64,11 @@ namespace munchkin_card_editor
         public Bitmap EditedImage { get; set; }
         public ICardStyle Style { get; set; } = new OriginalDungeonStyle();
 
-        public void UpdateImage() => EditedImage = Style.GetEditedFrontImageFor(this);
+        public void UpdateImage()
+        {
+            EditedImage?.Dispose();
+            EditedImage = Style.GetEditedFrontImageFor(this);
+        }
         public override string ToString() => Title;
     }
 }
