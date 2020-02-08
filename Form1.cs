@@ -17,29 +17,25 @@ namespace munchkin_card_editor
             InitializeComponent();
         }
 
-        private void MainForm_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void pictureBox1_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void addCardToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
-        }
-
-        private void cardListBox_MouseClick(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right) cardListBoxContextStrip.Show();
+            Card card = new Card { Title = "New card" };
+            card.UpdateImage();
+            cardListBox.Items.Add(card);
         }
 
         private void cardListBoxContextStrip_Opening(object sender, CancelEventArgs e)
         {
             deleteCardCtxItem.Enabled = cardListBox.SelectedItem != null;
         }
+
+        private void UpdateCardDisplayer()
+        {
+            Card card = (Card)cardListBox.SelectedItem;
+
+            cardPictureBox.Image = card.EditedImage;
+        }
+
+        private void cardListBox_SelectedValueChanged(object sender, EventArgs e) => UpdateCardDisplayer();
     }
 }

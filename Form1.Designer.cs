@@ -56,12 +56,13 @@
             this.cardListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.cardListBox.ContextMenuStrip = this.cardListBoxContextStrip;
             this.cardListBox.FormattingEnabled = true;
             this.cardListBox.Location = new System.Drawing.Point(5, 4);
             this.cardListBox.Name = "cardListBox";
             this.cardListBox.Size = new System.Drawing.Size(462, 550);
             this.cardListBox.TabIndex = 0;
-            this.cardListBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.cardListBox_MouseClick);
+            this.cardListBox.SelectedValueChanged += new System.EventHandler(this.cardListBox_SelectedValueChanged);
             // 
             // cardPictureBox
             // 
@@ -71,9 +72,9 @@
             this.cardPictureBox.Location = new System.Drawing.Point(3, 4);
             this.cardPictureBox.Name = "cardPictureBox";
             this.cardPictureBox.Size = new System.Drawing.Size(296, 359);
+            this.cardPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.cardPictureBox.TabIndex = 0;
             this.cardPictureBox.TabStop = false;
-            this.cardPictureBox.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
             // splitContainer1
             // 
@@ -153,7 +154,7 @@
             this.addCardCtxItem,
             this.deleteCardCtxItem});
             this.cardListBoxContextStrip.Name = "cardListBoxContextStrip";
-            this.cardListBoxContextStrip.Size = new System.Drawing.Size(181, 70);
+            this.cardListBoxContextStrip.Size = new System.Drawing.Size(125, 48);
             this.cardListBoxContextStrip.Opening += new System.ComponentModel.CancelEventHandler(this.cardListBoxContextStrip_Opening);
             // 
             // addCardCtxItem
@@ -177,7 +178,6 @@
             this.Controls.Add(this.splitContainer1);
             this.Name = "MainForm";
             this.Text = "Card Editor";
-            this.Load += new System.EventHandler(this.MainForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.cardPictureBox)).EndInit();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
