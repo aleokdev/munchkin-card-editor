@@ -10,11 +10,36 @@ using System.Windows.Forms;
 
 namespace munchkin_card_editor
 {
-    public partial class Form1 : Form
+    public partial class MainForm : System.Windows.Forms.Form
     {
-        public Form1()
+        public MainForm()
         {
             InitializeComponent();
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void addCardToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cardListBox_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right) cardListBoxContextStrip.Show();
+        }
+
+        private void cardListBoxContextStrip_Opening(object sender, CancelEventArgs e)
+        {
+            deleteCardCtxItem.Enabled = cardListBox.SelectedItem != null;
         }
     }
 }
