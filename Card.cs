@@ -64,14 +64,16 @@ namespace munchkin_card_editor
             Bitmap img = (Bitmap)GetBaseFrontImage().Clone();
             using (Graphics g = Graphics.FromImage(img))
             {
+                SizeF titleSize;
                 using (Font font = new Font("Quasimodo", 32))
                 {
-                    PointF titlePos = new PointF(img.Width / 2 - g.MeasureString(card.Title, font).Width / 2, 35);
-                    g.DrawString(card.Title, font, new SolidBrush(Color.FromArgb(78, 29, 24)), titlePos);
+                    RectangleF titleRect = new RectangleF(35, 35, img.Width - 70, img.Height);
+                    titleSize = g.MeasureString(card.Title, font, titleRect.Size, new StringFormat() { Alignment = StringAlignment.Center });
+                    g.DrawString(card.Title, font, new SolidBrush(Color.FromArgb(78, 29, 24)), titleRect, new StringFormat() { Alignment = StringAlignment.Center });
                 }
                 using (Font font = new Font("Quasimodo", 16))
                 {
-                    RectangleF descriptionRect = new RectangleF(35, 100, img.Width - 70, img.Height);
+                    RectangleF descriptionRect = new RectangleF(35, titleSize.Height+30, img.Width - 70, img.Height);
                     g.DrawString(card.Description, font, new SolidBrush(Color.FromArgb(78, 29, 24)), descriptionRect);
                 }
             }
