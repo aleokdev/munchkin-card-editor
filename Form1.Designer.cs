@@ -38,6 +38,7 @@
             this.deleteCardCtxItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cardPictureBox = new System.Windows.Forms.PictureBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.cardStyleComboBox = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.cardDescriptionTextBox = new System.Windows.Forms.TextBox();
@@ -46,7 +47,8 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.pBar = new System.Windows.Forms.ProgressBar();
+            this.pBarText = new System.Windows.Forms.Label();
             label1 = new System.Windows.Forms.Label();
             label2 = new System.Windows.Forms.Label();
             label4 = new System.Windows.Forms.Label();
@@ -78,6 +80,15 @@
             label2.Size = new System.Drawing.Size(85, 13);
             label2.TabIndex = 3;
             label2.Text = "Card Description";
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new System.Drawing.Point(31, 513);
+            label4.Name = "label4";
+            label4.Size = new System.Drawing.Size(59, 13);
+            label4.TabIndex = 8;
+            label4.Text = "Card Script";
             // 
             // cardListBox
             // 
@@ -153,6 +164,14 @@
             this.splitContainer1.SplitterDistance = 470;
             this.splitContainer1.TabIndex = 1;
             // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(96, 510);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(203, 21);
+            this.comboBox1.TabIndex = 7;
+            // 
             // cardStyleComboBox
             // 
             this.cardStyleComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -218,28 +237,32 @@
             this.loadToolStripMenuItem.Text = "Load";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
             // 
-            // comboBox1
+            // pBar
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(96, 510);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(203, 21);
-            this.comboBox1.TabIndex = 7;
+            this.pBar.Location = new System.Drawing.Point(676, 4);
+            this.pBar.Name = "pBar";
+            this.pBar.Size = new System.Drawing.Size(112, 17);
+            this.pBar.TabIndex = 3;
+            this.pBar.Visible = false;
             // 
-            // label4
+            // pBarText
             // 
-            label4.AutoSize = true;
-            label4.Location = new System.Drawing.Point(31, 513);
-            label4.Name = "label4";
-            label4.Size = new System.Drawing.Size(59, 13);
-            label4.TabIndex = 8;
-            label4.Text = "Card Script";
+            this.pBarText.AutoSize = true;
+            this.pBarText.Location = new System.Drawing.Point(635, 8);
+            this.pBarText.Name = "pBarText";
+            this.pBarText.Size = new System.Drawing.Size(35, 13);
+            this.pBarText.TabIndex = 4;
+            this.pBarText.Text = "label5";
+            this.pBarText.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.pBarText.Visible = false;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 580);
+            this.Controls.Add(this.pBarText);
+            this.Controls.Add(this.pBar);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.splitContainer1);
             this.MainMenuStrip = this.menuStrip1;
@@ -276,6 +299,8 @@
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadToolStripMenuItem;
         private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ProgressBar pBar;
+        private System.Windows.Forms.Label pBarText;
     }
 }
 

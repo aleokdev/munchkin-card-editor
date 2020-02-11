@@ -90,10 +90,6 @@ namespace munchkin_card_editor
 
     public class Card
     {
-        public Card()
-        {
-            Style.GetEditedFrontImageFor(this);
-        }
         public string Title { get; set; }
         public string Description { get; set; }
         public CardCategory Category { get; set; }
