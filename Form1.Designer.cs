@@ -84,6 +84,7 @@
             // label4
             // 
             label4.AutoSize = true;
+            label4.Enabled = false;
             label4.Location = new System.Drawing.Point(31, 513);
             label4.Name = "label4";
             label4.Size = new System.Drawing.Size(59, 13);
@@ -166,6 +167,7 @@
             // 
             // comboBox1
             // 
+            this.comboBox1.Enabled = false;
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Location = new System.Drawing.Point(96, 510);
             this.comboBox1.Name = "comboBox1";
@@ -175,6 +177,7 @@
             // cardStyleComboBox
             // 
             this.cardStyleComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.cardStyleComboBox.Enabled = false;
             this.cardStyleComboBox.FormattingEnabled = true;
             this.cardStyleComboBox.Location = new System.Drawing.Point(96, 482);
             this.cardStyleComboBox.Name = "cardStyleComboBox";
@@ -185,6 +188,7 @@
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label3.AutoSize = true;
+            this.label3.Enabled = false;
             this.label3.Location = new System.Drawing.Point(35, 485);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(55, 13);
