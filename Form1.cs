@@ -280,5 +280,13 @@ namespace munchkin_card_editor
             pBar.Visible = false;
             pBarText.Visible = false;
         }
+
+        private void deleteCardCtxItem_Click(object sender, EventArgs e)
+        {
+            if (cardListBox.SelectedItem == null)
+                return;
+            foreach (int index in cardListBox.SelectedIndices)
+                cardListBox.Items.RemoveAt(index);
+        }
     }
 }

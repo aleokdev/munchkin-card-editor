@@ -125,6 +125,7 @@
             this.deleteCardCtxItem.Name = "deleteCardCtxItem";
             this.deleteCardCtxItem.Size = new System.Drawing.Size(124, 22);
             this.deleteCardCtxItem.Text = "Delete";
+            this.deleteCardCtxItem.Click += new System.EventHandler(this.deleteCardCtxItem_Click);
             // 
             // splitContainer1
             // 

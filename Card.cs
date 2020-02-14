@@ -104,6 +104,8 @@ namespace munchkin_card_editor
 
     public class Card
     {
+        ~Card() { EditedImage?.Dispose(); }
+
         public string Title { get; set; }
         public string Description { get; set; }
         public string ScriptPath { get; set; }
