@@ -15,6 +15,7 @@ namespace munchkin_card_editor
     public partial class MainForm : Form
     {
         string cardpackPath = null;
+        CardpackData data = new CardpackData();
 
         public MainForm()
         {
@@ -30,13 +31,22 @@ namespace munchkin_card_editor
             {
                 cardStyleComboBox.Items.Add(new EncapsulatedCardStyleType(style));
             }
+
+            RefreshListbox();
+        }
+
+        private void RefreshListbox()
+        {
+            cardListBox.DataSource = null;
+            cardListBox.DataSource = data.Cards;
         }
 
         private void addCardToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Card card = new Card { Title = "New card", Description = "This is a description" };
             card.UpdateImage();
-            cardListBox.Items.Add(card);
+            data.Cards.Add(card);
+            RefreshListbox();
         }
 
         private void cardListBoxContextStrip_Opening(object sender, CancelEventArgs e)
@@ -74,7 +84,7 @@ namespace munchkin_card_editor
                 Card card = (Card)cardListBox.SelectedItem;
                 if (card == null) return;
 
-                if (card.EditedImage == null) card.UpdateImage();
+                card.UpdateImage();
                 cardPictureBox.Image = card.EditedImage;
                 cardTitleTextBox.Text = card.Title;
                 cardDescriptionTextBox.Text = card.Description;
@@ -172,7 +182,7 @@ namespace munchkin_card_editor
             using (var stream = new FileStream(cardsJsonPath, FileMode.Open))
                 json = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(stream);
 
-            cardListBox.Items.Clear();
+            data.Cards.Clear();
             foreach (Dictionary<string, object> cardJson in json)
             {
                 Card parsedCard = new Card();
@@ -180,11 +190,12 @@ namespace munchkin_card_editor
                     parsedCard.SetStyleFromString((string)style);
 
                 parsedCard.SetDataFromDict(cardJson);
-                cardListBox.Items.Add(parsedCard);
+                data.Cards.Add(parsedCard);
             }
 
             cardpackPath = Path.GetDirectoryName(dialog.FileName);
             UpdateScriptPaths();
+            RefreshListbox();
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -214,13 +225,13 @@ namespace munchkin_card_editor
             }
 
             // TODO: Set cardpack back texture from somewhere in the application
-            string styleFilename = new string((from c in ((Card)cardListBox.Items[0]).Style.GetType().Name where !Path.GetInvalidFileNameChars().Contains(c) select c).ToArray()).ToLower();
+            string styleFilename = new string((from c in data.Cards[0].Style.GetType().Name where !Path.GetInvalidFileNameChars().Contains(c) select c).ToArray()).ToLower();
             const string backTextureFilename = "textures/dungeon-back.png";
             if (!File.Exists(Path.Combine(cardpackPath, backTextureFilename)))
             {
                 using (var f = new FileStream(Path.Combine(cardpackPath, backTextureFilename), FileMode.Create))
                 {
-                    ((Card)cardListBox.Items[0]).Style.GetBaseBackImage().Save(f, ImageFormat.Png);
+                    data.Cards[0].Style.GetBaseBackImage().Save(f, ImageFormat.Png);
                 }
             }
 
@@ -236,10 +247,10 @@ namespace munchkin_card_editor
 
             // Save textures
             pBarText.Text = "Saving textures...";
-            pBar.Maximum = cardListBox.Items.Count;
+            pBar.Maximum = data.Cards.Count;
             Dictionary<Card, string> texturePaths = new Dictionary<Card, string>();
             uint uid = 0;
-            foreach (Card card in cardListBox.Items)
+            foreach (Card card in data.Cards)
             {
                 card.UpdateImage();
 
@@ -257,7 +268,7 @@ namespace munchkin_card_editor
             pBarText.Text = "Creating cards.json...";
             pBar.Value = 0;
             List<Dictionary<string, object>> cardJsonList = new List<Dictionary<string, object>>();
-            foreach (Card card in cardListBox.Items)
+            foreach (Card card in data.Cards)
             {
                 Dictionary<string, object> data = new Dictionary<string, object>();
                 data.Add("name", card.Title);
@@ -285,8 +296,13 @@ namespace munchkin_card_editor
         {
             if (cardListBox.SelectedItem == null)
                 return;
+            int offset = 0;
             foreach (int index in cardListBox.SelectedIndices)
-                cardListBox.Items.RemoveAt(index);
+            {
+                data.Cards.RemoveAt(index-offset);
+                offset++;
+            }
+            RefreshListbox();
         }
     }
 }

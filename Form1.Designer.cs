@@ -98,7 +98,7 @@
             this.cardListBox.Location = new System.Drawing.Point(5, 4);
             this.cardListBox.Name = "cardListBox";
             this.cardListBox.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.cardListBox.Size = new System.Drawing.Size(517, 732);
+            this.cardListBox.Size = new System.Drawing.Size(517, 719);
             this.cardListBox.TabIndex = 0;
             this.cardListBox.SelectedValueChanged += new System.EventHandler(this.cardListBox_SelectedValueChanged);
             // 
@@ -108,7 +108,7 @@
             this.addCardCtxItem,
             this.deleteCardCtxItem});
             this.cardListBoxContextStrip.Name = "cardListBoxContextStrip";
-            this.cardListBoxContextStrip.Size = new System.Drawing.Size(125, 48);
+            this.cardListBoxContextStrip.Size = new System.Drawing.Size(181, 70);
             this.cardListBoxContextStrip.Opening += new System.ComponentModel.CancelEventHandler(this.cardListBoxContextStrip_Opening);
             // 
             // addCardCtxItem
@@ -121,8 +121,9 @@
             // deleteCardCtxItem
             // 
             this.deleteCardCtxItem.Name = "deleteCardCtxItem";
-            this.deleteCardCtxItem.Size = new System.Drawing.Size(124, 22);
+            this.deleteCardCtxItem.Size = new System.Drawing.Size(180, 22);
             this.deleteCardCtxItem.Text = "Delete";
+            this.deleteCardCtxItem.Click += new System.EventHandler(this.deleteCardCtxItem_Click);
             // 
             // splitContainer1
             // 
@@ -149,7 +150,7 @@
             this.splitContainer1.Panel2.Controls.Add(this.cardTitleTextBox);
             this.splitContainer1.Panel2.Controls.Add(label1);
             this.splitContainer1.Panel2.Controls.Add(this.cardPictureBox);
-            this.splitContainer1.Size = new System.Drawing.Size(868, 771);
+            this.splitContainer1.Size = new System.Drawing.Size(868, 763);
             this.splitContainer1.SplitterDistance = 525;
             this.splitContainer1.TabIndex = 1;
             // 
@@ -157,7 +158,7 @@
             // 
             this.pBarText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.pBarText.AutoSize = true;
-            this.pBarText.Location = new System.Drawing.Point(123, 742);
+            this.pBarText.Location = new System.Drawing.Point(123, 734);
             this.pBarText.Name = "pBarText";
             this.pBarText.Size = new System.Drawing.Size(50, 13);
             this.pBarText.TabIndex = 4;
@@ -168,7 +169,7 @@
             // pBar
             // 
             this.pBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.pBar.Location = new System.Drawing.Point(5, 740);
+            this.pBar.Location = new System.Drawing.Point(5, 732);
             this.pBar.Name = "pBar";
             this.pBar.Size = new System.Drawing.Size(112, 17);
             this.pBar.TabIndex = 3;
@@ -268,7 +269,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(892, 795);
+            this.ClientSize = new System.Drawing.Size(892, 787);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.splitContainer1);
             this.MainMenuStrip = this.menuStrip1;
