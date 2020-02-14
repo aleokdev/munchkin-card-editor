@@ -106,6 +106,7 @@ namespace munchkin_card_editor
     {
         public string Title { get; set; }
         public string Description { get; set; }
+        public string ScriptPath { get; set; }
         public CardCategory Category { get; set; }
         public Bitmap EditedImage { get; set; }
         public ICardStyle Style { get; set; } = new OriginalDungeonStyle();
@@ -129,6 +130,7 @@ namespace munchkin_card_editor
         {
             Title = (string)data.GetOrNull("name") ?? "Card Name";
             Description = (string)data.GetOrNull("description") ?? "Card Description";
+            ScriptPath = (string)data.GetOrNull("script") ?? "";
             Category = (string)data.GetOrNull("category") == "treasure" ? CardCategory.Treasure : CardCategory.Dungeon;
         }
         public override string ToString() => Title;

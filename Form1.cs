@@ -21,7 +21,7 @@ namespace munchkin_card_editor
             InitializeComponent();
 
             displayerStopwatch.Start();
-            cardDisplayTimer.Tick += (object o, EventArgs e) => UpdateCardDisplayer();
+            cardDisplayTimer.Tick += (object o, EventArgs e) => UpdateCardMembers((Card)cardListBox.SelectedItem);
             cardDisplayTimer.Start();
 
             foreach (Type style in from type in Assembly.GetExecutingAssembly().GetTypes()
@@ -44,22 +44,24 @@ namespace munchkin_card_editor
             deleteCardCtxItem.Enabled = cardListBox.SelectedItem != null;
         }
 
-        private void UpdateCardDisplayer()
+        private void UpdateCardMembers(Card card)
         {
-            Card card = (Card)cardListBox.SelectedItem;
             if (card == null) return;
 
             if (card.Title != cardTitleTextBox.Text || card.Description != cardDescriptionTextBox.Text)
             {
                 card.Title = cardTitleTextBox.Text;
                 card.Description = cardDescriptionTextBox.Text;
-                card.Style = (ICardStyle)Activator.CreateInstance(((EncapsulatedCardStyleType)cardStyleComboBox.SelectedItem).Type);
                 card.UpdateImage();
                 cardPictureBox.Image = card.EditedImage;
             }
+
+            card.ScriptPath = cardScriptComboBox.Text;
+            if (cardStyleComboBox.SelectedItem != null)
+                card.Style = (ICardStyle)Activator.CreateInstance(((EncapsulatedCardStyleType)cardStyleComboBox.SelectedItem).Type);
         }
 
-        private void UpdateCardFields()
+        private void UpdateCardDisplayedData()
         {
             Card card = (Card)cardListBox.SelectedItem;
             if (card == null) return;
@@ -69,6 +71,8 @@ namespace munchkin_card_editor
             cardPictureBox.Image = card.EditedImage;
             cardTitleTextBox.Text = card.Title;
             cardDescriptionTextBox.Text = card.Description;
+            cardScriptComboBox.Text = card.ScriptPath;
+
             foreach (var t in cardStyleComboBox.Items.Cast<EncapsulatedCardStyleType>())
                 if (t.Type.Equals(card.Style.GetType()))
                 {
@@ -77,9 +81,38 @@ namespace munchkin_card_editor
                 }
         }
 
+        private static string GetRelativePath(string filespec, string folder)
+        {
+            Uri pathUri = new Uri(filespec);
+            // Folders must end in a slash
+            if (!folder.EndsWith(Path.DirectorySeparatorChar.ToString()))
+            {
+                folder += Path.DirectorySeparatorChar;
+            }
+            Uri folderUri = new Uri(folder);
+            return Uri.UnescapeDataString(folderUri.MakeRelativeUri(pathUri).ToString().Replace('/', Path.DirectorySeparatorChar));
+        }
+
+        private void UpdateScriptPaths()
+        {
+            cardScriptComboBox.Items.Clear();
+            cardScriptComboBox.Items.AddRange(
+                (from t in Directory.EnumerateFiles(Path.Combine(cardpackPath, "scripts"), "*.lua", SearchOption.AllDirectories)
+                 select GetRelativePath(t, cardpackPath)).ToArray()
+                );
+        }
+
         Stopwatch displayerStopwatch = new Stopwatch();
 
-        private void cardListBox_SelectedValueChanged(object sender, EventArgs e) => UpdateCardFields();
+        Card lastSelectedCard;
+        private void cardListBox_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if(lastSelectedCard != null)
+                UpdateCardMembers(lastSelectedCard);
+            UpdateCardDisplayedData();
+
+            lastSelectedCard = (Card)cardListBox.SelectedItem;
+        }
 
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -91,31 +124,32 @@ namespace munchkin_card_editor
             dialog.CheckPathExists = true;
             // Always default to Folder Selection.
             dialog.FileName = "Cardpack folder";
-            if (dialog.ShowDialog() == DialogResult.OK)
+            if (dialog.ShowDialog() != DialogResult.OK)
+                return;
+
+            string cardsJsonPath = Path.Combine(Path.GetDirectoryName(dialog.FileName), "cards.json");
+            if (!File.Exists(cardsJsonPath))
             {
-                string cardsJsonPath = Path.Combine(Path.GetDirectoryName(dialog.FileName), "cards.json");
-                if (!File.Exists(cardsJsonPath))
-                {
-                    MessageBox.Show("The directory inputted is not a valid cardpack. Valid cardpacks must contain a cards.json file.", "Invalid cardpack", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-                List<Dictionary<string, object>> json;
-                using (var stream = new FileStream(cardsJsonPath, FileMode.Open))
-                    json = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(stream);
-
-                cardListBox.Items.Clear();
-                foreach (Dictionary<string, object> cardJson in json)
-                {
-                    Card parsedCard = new Card();
-                    if (cardJson.TryGetValue("style", out object style))
-                        parsedCard.SetStyleFromString((string)style);
-
-                    parsedCard.SetDataFromDict(cardJson);
-                    cardListBox.Items.Add(parsedCard);
-                }
-
-                cardpackPath = Path.GetDirectoryName(dialog.FileName);
+                MessageBox.Show("The directory inputted is not a valid cardpack. Valid cardpacks must contain a cards.json file.", "Invalid cardpack", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
+            List<Dictionary<string, object>> json;
+            using (var stream = new FileStream(cardsJsonPath, FileMode.Open))
+                json = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(stream);
+
+            cardListBox.Items.Clear();
+            foreach (Dictionary<string, object> cardJson in json)
+            {
+                Card parsedCard = new Card();
+                if (cardJson.TryGetValue("style", out object style))
+                    parsedCard.SetStyleFromString((string)style);
+
+                parsedCard.SetDataFromDict(cardJson);
+                cardListBox.Items.Add(parsedCard);
+            }
+
+            cardpackPath = Path.GetDirectoryName(dialog.FileName);
+            UpdateScriptPaths();
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -128,14 +162,16 @@ namespace munchkin_card_editor
 
             if (cardpackPath == null)
             {
-                OpenFileDialog dialog = new OpenFileDialog();
-                // Set validate names and check file exists to false otherwise windows will
-                // not let you select "Folder Selection"
-                dialog.ValidateNames = false;
-                dialog.CheckFileExists = false;
-                dialog.CheckPathExists = true;
-                // Always default to Folder Selection.
-                dialog.FileName = "Cardpack folder";
+                OpenFileDialog dialog = new OpenFileDialog
+                {
+                    // Set validate names and check file exists to false otherwise windows will
+                    // not let you select "Folder Selection"
+                    ValidateNames = false,
+                    CheckFileExists = false,
+                    CheckPathExists = true,
+                    // Always default to Folder Selection.
+                    FileName = "Cardpack folder"
+                };
                 if (dialog.ShowDialog() == DialogResult.OK)
                     cardpackPath = Path.GetDirectoryName(dialog.FileName);
                 else
@@ -183,6 +219,7 @@ namespace munchkin_card_editor
                 data.Add("description", card.Description);
                 data.Add("category", card.Category == CardCategory.Dungeon ? "dungeon" : "treasure");
                 data.Add("style", card.Style.GetType().Name);
+                data.Add("script", card.ScriptPath);
                 data.Add("front_texture", texturePaths[card]);
                 pBar.PerformStep();
                 cardJsonList.Add(data);
@@ -197,11 +234,6 @@ namespace munchkin_card_editor
 
             pBar.Visible = false;
             pBarText.Visible = false;
-        }
-
-        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }
