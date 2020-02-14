@@ -215,13 +215,23 @@ namespace munchkin_card_editor
 
             // TODO: Set cardpack back texture from somewhere in the application
             string styleFilename = new string((from c in ((Card)cardListBox.Items[0]).Style.GetType().Name where !Path.GetInvalidFileNameChars().Contains(c) select c).ToArray()).ToLower();
-            string backTextureFilename = "textures/" + "back_" + styleFilename + ".png";
-            if (!File.Exists(Path.Combine(cardpackPath, "textures/dungeon_back.png")))
+            const string backTextureFilename = "textures/dungeon_back.png";
+            if (!File.Exists(Path.Combine(cardpackPath, backTextureFilename)))
             {
                 using (var f = new FileStream(Path.Combine(cardpackPath, backTextureFilename), FileMode.Create))
                 {
                     ((Card)cardListBox.Items[0]).Style.GetBaseBackImage().Save(f, ImageFormat.Png);
                 }
+            }
+
+            string textureCacheDir = Path.Combine(cardpackPath, "textures/cache/");
+            if (!Directory.Exists(textureCacheDir))
+                Directory.CreateDirectory(textureCacheDir);
+
+            // Delete old textures
+            foreach(string path in Directory.EnumerateFiles(textureCacheDir, "*.png", SearchOption.TopDirectoryOnly))
+            {
+                File.Delete(path);
             }
 
             // Save textures
@@ -234,8 +244,8 @@ namespace munchkin_card_editor
                 card.UpdateImage();
 
                 string titleFilename = new string((from c in card.Title.Replace(" ", "_") where !Path.GetInvalidFileNameChars().Contains(c) select c).ToArray()).ToLower();
-                string textureFilename = "textures/" + (++uid).ToString() + "_" + titleFilename + ".png";
-                using (var f = new FileStream(Path.Combine(cardpackPath, textureFilename), FileMode.Create))
+                string textureFilename = textureCacheDir + (++uid).ToString() + "_" + titleFilename + ".png";
+                using (var f = new FileStream(textureFilename, FileMode.CreateNew))
                 {
                     card.EditedImage.Save(f, ImageFormat.Png);
                 }
