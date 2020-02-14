@@ -44,41 +44,75 @@ namespace munchkin_card_editor
             deleteCardCtxItem.Enabled = cardListBox.SelectedItem != null;
         }
 
+        const string multiValueSelectionIndicator = "<Different values>";
+
         private void UpdateCardMembers(Card card)
         {
             if (card == null) return;
 
             if (card.Title != cardTitleTextBox.Text || card.Description != cardDescriptionTextBox.Text)
             {
-                card.Title = cardTitleTextBox.Text;
-                card.Description = cardDescriptionTextBox.Text;
+                if (cardTitleTextBox.Text != multiValueSelectionIndicator)
+                    card.Title = cardTitleTextBox.Text;
+                if (cardDescriptionTextBox.Text != multiValueSelectionIndicator)
+                    card.Description = cardDescriptionTextBox.Text;
                 card.UpdateImage();
                 cardPictureBox.Image = card.EditedImage;
             }
 
-            card.ScriptPath = cardScriptComboBox.Text;
+            if (cardScriptComboBox.Text != multiValueSelectionIndicator)
+                card.ScriptPath = cardScriptComboBox.Text;
             if (cardStyleComboBox.SelectedItem != null)
                 card.Style = (ICardStyle)Activator.CreateInstance(((EncapsulatedCardStyleType)cardStyleComboBox.SelectedItem).Type);
         }
 
         private void UpdateCardDisplayedData()
         {
-            Card card = (Card)cardListBox.SelectedItem;
-            if (card == null) return;
-
             Console.WriteLine("Changed!");
-            if (card.EditedImage == null) card.UpdateImage();
-            cardPictureBox.Image = card.EditedImage;
-            cardTitleTextBox.Text = card.Title;
-            cardDescriptionTextBox.Text = card.Description;
-            cardScriptComboBox.Text = card.ScriptPath;
+            if (cardListBox.SelectedIndices.Count == 1)
+            {
+                Card card = (Card)cardListBox.SelectedItem;
+                if (card == null) return;
 
-            foreach (var t in cardStyleComboBox.Items.Cast<EncapsulatedCardStyleType>())
-                if (t.Type.Equals(card.Style.GetType()))
+                if (card.EditedImage == null) card.UpdateImage();
+                cardPictureBox.Image = card.EditedImage;
+                cardTitleTextBox.Text = card.Title;
+                cardDescriptionTextBox.Text = card.Description;
+                cardScriptComboBox.Text = card.ScriptPath;
+
+                foreach (var t in cardStyleComboBox.Items.Cast<EncapsulatedCardStyleType>())
+                    if (t.Type.Equals(card.Style.GetType()))
+                    {
+                        cardStyleComboBox.SelectedItem = t;
+                        break;
+                    }
+            }
+            else if (cardListBox.SelectedIndices.Count > 1)
+            {
+                string commonTitle = ((Card)cardListBox.SelectedItem).Title;
+                foreach (Card card in cardListBox.SelectedItems.Cast<Card>())
                 {
-                    cardStyleComboBox.SelectedItem = t;
-                    break;
+                    if (commonTitle != card.Title)
+                        commonTitle = multiValueSelectionIndicator;
                 }
+                cardTitleTextBox.Text = commonTitle;
+
+                string commonDescription = ((Card)cardListBox.SelectedItem).Description;
+                foreach (Card card in cardListBox.SelectedItems.Cast<Card>())
+                {
+                    if (commonDescription != card.Description)
+                        commonDescription = multiValueSelectionIndicator;
+                }
+                cardDescriptionTextBox.Text = commonDescription;
+
+                string commonScript = ((Card)cardListBox.SelectedItem).ScriptPath;
+                foreach (Card card in cardListBox.SelectedItems.Cast<Card>())
+                {
+                    if (commonScript != card.ScriptPath)
+                        commonScript = multiValueSelectionIndicator;
+                }
+                cardScriptComboBox.Text = commonScript;
+            }
         }
 
         private static string GetRelativePath(string filespec, string folder)
@@ -104,14 +138,15 @@ namespace munchkin_card_editor
 
         Stopwatch displayerStopwatch = new Stopwatch();
 
-        Card lastSelectedCard;
+        Card[] lastSelectedCards;
         private void cardListBox_SelectedValueChanged(object sender, EventArgs e)
         {
-            if(lastSelectedCard != null)
-                UpdateCardMembers(lastSelectedCard);
+            if (lastSelectedCards != null)
+                foreach(Card card in lastSelectedCards)
+                    UpdateCardMembers(card);
             UpdateCardDisplayedData();
 
-            lastSelectedCard = (Card)cardListBox.SelectedItem;
+            lastSelectedCards = cardListBox.SelectedItems.Cast<Card>().ToArray();
         }
 
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)

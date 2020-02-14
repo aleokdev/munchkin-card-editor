@@ -99,6 +99,7 @@
             this.cardListBox.FormattingEnabled = true;
             this.cardListBox.Location = new System.Drawing.Point(5, 4);
             this.cardListBox.Name = "cardListBox";
+            this.cardListBox.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.cardListBox.Size = new System.Drawing.Size(457, 485);
             this.cardListBox.TabIndex = 0;
             this.cardListBox.SelectedValueChanged += new System.EventHandler(this.cardListBox_SelectedValueChanged);
