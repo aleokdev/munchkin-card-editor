@@ -39,6 +39,20 @@ namespace munchkin_card_editor
         }
     }
 
+    sealed public class EncapsulatedCardStyleType
+    {
+        public EncapsulatedCardStyleType(Type t)
+        {
+            Type = t;
+            CustomName = t.GetCustomAttribute<CardStyleProperties>().Name;
+        }
+
+        public string CustomName { get; set; }
+        public override string ToString() => CustomName;
+
+        public Type Type { get; set; }
+    }
+
     public interface ICardStyle
     {
         Bitmap GetBaseBackImage();
@@ -73,7 +87,7 @@ namespace munchkin_card_editor
                 }
                 using (Font font = new Font("Quasimodo", 16))
                 {
-                    RectangleF descriptionRect = new RectangleF(35, titleSize.Height+30, img.Width - 70, img.Height);
+                    RectangleF descriptionRect = new RectangleF(35, titleSize.Height + 30, img.Width - 70, img.Height);
                     g.DrawString(card.Description, font, new SolidBrush(Color.FromArgb(78, 29, 24)), descriptionRect);
                 }
             }

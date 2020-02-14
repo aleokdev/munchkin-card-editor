@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 using Utf8Json;
 
@@ -22,6 +23,13 @@ namespace munchkin_card_editor
             displayerStopwatch.Start();
             cardDisplayTimer.Tick += (object o, EventArgs e) => UpdateCardDisplayer();
             cardDisplayTimer.Start();
+
+            foreach (Type style in from type in Assembly.GetExecutingAssembly().GetTypes()
+                                   where type != typeof(ICardStyle) && typeof(ICardStyle).IsAssignableFrom(type)
+                                   select type)
+            {
+                cardStyleComboBox.Items.Add(new EncapsulatedCardStyleType(style));
+            }
         }
 
         private void addCardToolStripMenuItem_Click(object sender, EventArgs e)
@@ -45,6 +53,7 @@ namespace munchkin_card_editor
             {
                 card.Title = cardTitleTextBox.Text;
                 card.Description = cardDescriptionTextBox.Text;
+                card.Style = (ICardStyle)Activator.CreateInstance(((EncapsulatedCardStyleType)cardStyleComboBox.SelectedItem).Type);
                 card.UpdateImage();
                 cardPictureBox.Image = card.EditedImage;
             }
@@ -60,6 +69,12 @@ namespace munchkin_card_editor
             cardPictureBox.Image = card.EditedImage;
             cardTitleTextBox.Text = card.Title;
             cardDescriptionTextBox.Text = card.Description;
+            foreach (var t in cardStyleComboBox.Items.Cast<EncapsulatedCardStyleType>())
+                if (t.Type.Equals(card.Style.GetType()))
+                {
+                    cardStyleComboBox.SelectedItem = t;
+                    break;
+                }
         }
 
         Stopwatch displayerStopwatch = new Stopwatch();
@@ -85,11 +100,11 @@ namespace munchkin_card_editor
                     return;
                 }
                 List<Dictionary<string, object>> json;
-                using(var stream = new FileStream(cardsJsonPath, FileMode.Open))
+                using (var stream = new FileStream(cardsJsonPath, FileMode.Open))
                     json = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(stream);
 
                 cardListBox.Items.Clear();
-                foreach(Dictionary<string, object> cardJson in json)
+                foreach (Dictionary<string, object> cardJson in json)
                 {
                     Card parsedCard = new Card();
                     if (cardJson.TryGetValue("style", out object style))
@@ -111,7 +126,7 @@ namespace munchkin_card_editor
             pBar.Value = 0;
             pBar.Step = 1;
 
-            if(cardpackPath == null)
+            if (cardpackPath == null)
             {
                 OpenFileDialog dialog = new OpenFileDialog();
                 // Set validate names and check file exists to false otherwise windows will
@@ -149,11 +164,11 @@ namespace munchkin_card_editor
 
                 string titleFilename = new string((from c in card.Title.Replace(" ", "_") where !Path.GetInvalidFileNameChars().Contains(c) select c).ToArray()).ToLower();
                 string textureFilename = "textures/" + (++uid).ToString() + "_" + titleFilename + ".png";
-                using(var f = new FileStream(Path.Combine(cardpackPath, textureFilename), FileMode.Create))
+                using (var f = new FileStream(Path.Combine(cardpackPath, textureFilename), FileMode.Create))
                 {
                     card.EditedImage.Save(f, ImageFormat.Png);
                 }
-                
+
                 texturePaths.Add(card, textureFilename);
                 pBar.PerformStep();
             }
@@ -161,7 +176,7 @@ namespace munchkin_card_editor
             pBarText.Text = "Creating cards.json...";
             pBar.Value = 0;
             List<Dictionary<string, object>> cardJsonList = new List<Dictionary<string, object>>();
-            foreach(Card card in cardListBox.Items)
+            foreach (Card card in cardListBox.Items)
             {
                 Dictionary<string, object> data = new Dictionary<string, object>();
                 data.Add("name", card.Title);
@@ -182,6 +197,11 @@ namespace munchkin_card_editor
 
             pBar.Visible = false;
             pBarText.Visible = false;
+        }
+
+        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
