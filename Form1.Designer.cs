@@ -157,7 +157,7 @@
             // pBarText
             // 
             this.pBarText.AutoSize = true;
-            this.pBarText.Location = new System.Drawing.Point(123, 520);
+            this.pBarText.Location = new System.Drawing.Point(123, 501);
             this.pBarText.Name = "pBarText";
             this.pBarText.Size = new System.Drawing.Size(35, 13);
             this.pBarText.TabIndex = 4;
@@ -167,7 +167,7 @@
             // 
             // pBar
             // 
-            this.pBar.Location = new System.Drawing.Point(5, 517);
+            this.pBar.Location = new System.Drawing.Point(5, 497);
             this.pBar.Name = "pBar";
             this.pBar.Size = new System.Drawing.Size(112, 17);
             this.pBar.TabIndex = 3;
