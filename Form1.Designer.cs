@@ -40,17 +40,16 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.pBarText = new System.Windows.Forms.Label();
             this.pBar = new System.Windows.Forms.ProgressBar();
+            this.cardCategoryComboBox = new System.Windows.Forms.ComboBox();
             this.cardScriptComboBox = new System.Windows.Forms.ComboBox();
             this.cardStyleComboBox = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.cardDescriptionTextBox = new System.Windows.Forms.TextBox();
             this.cardTitleTextBox = new System.Windows.Forms.TextBox();
             this.cardPictureBox = new System.Windows.Forms.PictureBox();
-            this.cardDisplayTimer = new System.Windows.Forms.Timer(this.components);
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.cardCategoryComboBox = new System.Windows.Forms.ComboBox();
             label1 = new System.Windows.Forms.Label();
             label2 = new System.Windows.Forms.Label();
             label4 = new System.Windows.Forms.Label();
@@ -91,6 +90,15 @@
             label4.TabIndex = 8;
             label4.Text = "Card Script";
             // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new System.Drawing.Point(16, 512);
+            label5.Name = "label5";
+            label5.Size = new System.Drawing.Size(74, 13);
+            label5.TabIndex = 10;
+            label5.Text = "Card Category";
+            // 
             // cardListBox
             // 
             this.cardListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -101,7 +109,7 @@
             this.cardListBox.Location = new System.Drawing.Point(5, 4);
             this.cardListBox.Name = "cardListBox";
             this.cardListBox.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.cardListBox.Size = new System.Drawing.Size(517, 706);
+            this.cardListBox.Size = new System.Drawing.Size(517, 693);
             this.cardListBox.TabIndex = 0;
             this.cardListBox.SelectedValueChanged += new System.EventHandler(this.cardListBox_SelectedValueChanged);
             // 
@@ -155,7 +163,7 @@
             this.splitContainer1.Panel2.Controls.Add(this.cardTitleTextBox);
             this.splitContainer1.Panel2.Controls.Add(label1);
             this.splitContainer1.Panel2.Controls.Add(this.cardPictureBox);
-            this.splitContainer1.Size = new System.Drawing.Size(868, 755);
+            this.splitContainer1.Size = new System.Drawing.Size(868, 747);
             this.splitContainer1.SplitterDistance = 525;
             this.splitContainer1.TabIndex = 1;
             // 
@@ -163,7 +171,7 @@
             // 
             this.pBarText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.pBarText.AutoSize = true;
-            this.pBarText.Location = new System.Drawing.Point(123, 726);
+            this.pBarText.Location = new System.Drawing.Point(123, 718);
             this.pBarText.Name = "pBarText";
             this.pBarText.Size = new System.Drawing.Size(50, 13);
             this.pBarText.TabIndex = 4;
@@ -174,11 +182,22 @@
             // pBar
             // 
             this.pBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.pBar.Location = new System.Drawing.Point(5, 724);
+            this.pBar.Location = new System.Drawing.Point(5, 716);
             this.pBar.Name = "pBar";
             this.pBar.Size = new System.Drawing.Size(112, 17);
             this.pBar.TabIndex = 3;
             this.pBar.Visible = false;
+            // 
+            // cardCategoryComboBox
+            // 
+            this.cardCategoryComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cardCategoryComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cardCategoryComboBox.Location = new System.Drawing.Point(96, 509);
+            this.cardCategoryComboBox.Name = "cardCategoryComboBox";
+            this.cardCategoryComboBox.Size = new System.Drawing.Size(234, 21);
+            this.cardCategoryComboBox.TabIndex = 9;
+            this.cardCategoryComboBox.SelectedIndexChanged += new System.EventHandler(this.cardCategoryComboBox_SelectedIndexChanged);
             // 
             // cardScriptComboBox
             // 
@@ -202,6 +221,7 @@
             this.cardStyleComboBox.Name = "cardStyleComboBox";
             this.cardStyleComboBox.Size = new System.Drawing.Size(234, 21);
             this.cardStyleComboBox.TabIndex = 6;
+            this.cardStyleComboBox.SelectedIndexChanged += new System.EventHandler(this.cardStyleComboBox_SelectedIndexChanged);
             // 
             // label3
             // 
@@ -221,6 +241,7 @@
             this.cardDescriptionTextBox.Name = "cardDescriptionTextBox";
             this.cardDescriptionTextBox.Size = new System.Drawing.Size(234, 76);
             this.cardDescriptionTextBox.TabIndex = 4;
+            this.cardDescriptionTextBox.KeyUp += new System.Windows.Forms.KeyEventHandler(this.cardDescriptionTextBox_KeyUp);
             // 
             // cardTitleTextBox
             // 
@@ -230,6 +251,7 @@
             this.cardTitleTextBox.Name = "cardTitleTextBox";
             this.cardTitleTextBox.Size = new System.Drawing.Size(234, 20);
             this.cardTitleTextBox.TabIndex = 2;
+            this.cardTitleTextBox.KeyUp += new System.Windows.Forms.KeyEventHandler(this.cardTitleTextBox_KeyUp);
             // 
             // cardPictureBox
             // 
@@ -241,10 +263,6 @@
             this.cardPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.cardPictureBox.TabIndex = 0;
             this.cardPictureBox.TabStop = false;
-            // 
-            // cardDisplayTimer
-            // 
-            this.cardDisplayTimer.Interval = 500;
             // 
             // menuStrip1
             // 
@@ -271,30 +289,11 @@
             this.loadToolStripMenuItem.Text = "Load";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
             // 
-            // cardCategoryComboBox
-            // 
-            this.cardCategoryComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.cardCategoryComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cardCategoryComboBox.Location = new System.Drawing.Point(96, 509);
-            this.cardCategoryComboBox.Name = "cardCategoryComboBox";
-            this.cardCategoryComboBox.Size = new System.Drawing.Size(234, 21);
-            this.cardCategoryComboBox.TabIndex = 9;
-            // 
-            // label5
-            // 
-            label5.AutoSize = true;
-            label5.Location = new System.Drawing.Point(16, 512);
-            label5.Name = "label5";
-            label5.Size = new System.Drawing.Size(74, 13);
-            label5.TabIndex = 10;
-            label5.Text = "Card Category";
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(892, 779);
+            this.ClientSize = new System.Drawing.Size(892, 771);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.splitContainer1);
             this.MainMenuStrip = this.menuStrip1;
@@ -327,7 +326,6 @@
         private System.Windows.Forms.ContextMenuStrip cardListBoxContextStrip;
         private System.Windows.Forms.ToolStripMenuItem addCardCtxItem;
         private System.Windows.Forms.ToolStripMenuItem deleteCardCtxItem;
-        private System.Windows.Forms.Timer cardDisplayTimer;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadToolStripMenuItem;

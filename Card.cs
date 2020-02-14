@@ -55,27 +55,45 @@ namespace munchkin_card_editor
 
     public interface ICardStyle
     {
-        Bitmap GetBaseBackImage();
-        Bitmap GetBaseFrontImage();
+        Bitmap GetBaseBackImage(CardCategory category);
+        Bitmap GetBaseFrontImage(CardCategory category);
         Bitmap GetEditedFrontImageFor(Card card);
     }
 
-    [CardStyleProperties("Original Dungeon Style")]
-    public class OriginalDungeonStyle : ICardStyle
+    [CardStyleProperties("Original Style")]
+    public class OriginalStyle : ICardStyle
     {
-        public Bitmap GetBaseBackImage()
+        public Bitmap GetBaseBackImage(CardCategory cat)
         {
-            return ImgResources.OriginalDungeonBack;
+            switch (cat)
+            {
+                case CardCategory.Treasure:
+                    return ImgResources.OriginalTreasureBack;
+                case CardCategory.Dungeon:
+                    return ImgResources.OriginalDungeonBack;
+
+                default:
+                    throw new NotImplementedException();
+            }
         }
 
-        public Bitmap GetBaseFrontImage()
+        public Bitmap GetBaseFrontImage(CardCategory cat)
         {
-            return ImgResources.OriginalDungeonFront;
+            switch (cat)
+            {
+                case CardCategory.Treasure:
+                    return ImgResources.OriginalTreasureFront;
+                case CardCategory.Dungeon:
+                    return ImgResources.OriginalDungeonFront;
+
+                default:
+                    throw new NotImplementedException();
+            }
         }
 
         public Bitmap GetEditedFrontImageFor(Card card)
         {
-            Bitmap img = (Bitmap)GetBaseFrontImage().Clone();
+            Bitmap img = (Bitmap)GetBaseFrontImage(card.Category).Clone();
             using (Graphics g = Graphics.FromImage(img))
             {
                 SizeF titleSize;
@@ -111,7 +129,7 @@ namespace munchkin_card_editor
         public string ScriptPath { get; set; }
         public CardCategory Category { get; set; }
         public Bitmap EditedImage => Style.GetEditedFrontImageFor(this);
-        public ICardStyle Style { get; set; } = new OriginalDungeonStyle();
+        public ICardStyle Style { get; set; } = new OriginalStyle();
 
         public void SetStyleFromString(string str)
         {
@@ -119,7 +137,10 @@ namespace munchkin_card_editor
                           where typeof(ICardStyle).IsAssignableFrom(type) && type.Name == str
                           select type;
 
-            Style = (ICardStyle)Activator.CreateInstance(results.First());
+            if(results.Count() == 0) // default if could not encounter type
+                Style = (ICardStyle)Activator.CreateInstance(typeof(OriginalStyle));
+            else
+                Style = (ICardStyle)Activator.CreateInstance(results.First());
         }
 
         public void SetDataFromDict(Dictionary<string, object> data)

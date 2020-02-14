@@ -45,10 +45,6 @@ namespace munchkin_card_editor
         {
             InitializeComponent();
 
-            displayerStopwatch.Start();
-            cardDisplayTimer.Tick += (object o, EventArgs e) => UpdateDisplayedImage();
-            cardDisplayTimer.Start();
-
             foreach (Type style in from type in Assembly.GetExecutingAssembly().GetTypes()
                                    where type != typeof(ICardStyle) && typeof(ICardStyle).IsAssignableFrom(type)
                                    select type)
@@ -102,18 +98,15 @@ namespace munchkin_card_editor
             Card card = cardEditing;
             if (card == null) return;
 
-            if (card.Title != cardTitleTextBox.Text || card.Description != cardDescriptionTextBox.Text)
+            Card preview = new Card
             {
-                Console.WriteLine("NOT THE SAME; Updating preview");
-                Card preview = new Card
-                {
-                    Title = cardTitleTextBox.Text,
-                    Description = cardDescriptionTextBox.Text
-                };
+                Title = cardTitleTextBox.Text,
+                Description = cardDescriptionTextBox.Text,
+                Category = (CardCategory)cardCategoryComboBox.SelectedItem
+            };
 
-                cardPictureBox.Image?.Dispose();
-                cardPictureBox.Image = preview.EditedImage;
-            }
+            cardPictureBox.Image?.Dispose();
+            cardPictureBox.Image = preview.EditedImage;
         }
 
         private void UpdateCardDisplayedData()
@@ -189,8 +182,6 @@ namespace munchkin_card_editor
                 );
         }
 
-        Stopwatch displayerStopwatch = new Stopwatch();
-
         private void cardListBox_SelectedValueChanged(object sender, EventArgs e)
         {
             Card[] newCards = new Card[cardListBox.SelectedIndices.Count];
@@ -263,14 +254,22 @@ namespace munchkin_card_editor
                     return;
             }
 
-            // TODO: Set cardpack back texture from somewhere in the application
-            string styleFilename = new string((from c in data.Cards[0].Style.GetType().Name where !Path.GetInvalidFileNameChars().Contains(c) select c).ToArray()).ToLower();
-            const string backTextureFilename = "textures/dungeon-back.png";
-            if (!File.Exists(Path.Combine(cardpackPath, backTextureFilename)))
+            // TODO: Set cardpack back textures from somewhere in the application
+            const string dungeonBackTextureFilename = "textures/dungeon-back.png";
+            if (!File.Exists(Path.Combine(cardpackPath, dungeonBackTextureFilename)))
             {
-                using (var f = new FileStream(Path.Combine(cardpackPath, backTextureFilename), FileMode.Create))
+                using (var f = new FileStream(Path.Combine(cardpackPath, dungeonBackTextureFilename), FileMode.Create))
                 {
-                    data.Cards[0].Style.GetBaseBackImage().Save(f, ImageFormat.Png);
+                    data.Cards[0].Style.GetBaseBackImage(CardCategory.Dungeon).Save(f, ImageFormat.Png);
+                }
+            }
+
+            const string treasureBackTextureFilename = "textures/treasure-back.png";
+            if (!File.Exists(Path.Combine(cardpackPath, treasureBackTextureFilename)))
+            {
+                using (var f = new FileStream(Path.Combine(cardpackPath, treasureBackTextureFilename), FileMode.Create))
+                {
+                    data.Cards[0].Style.GetBaseBackImage(CardCategory.Treasure).Save(f, ImageFormat.Png);
                 }
             }
 
@@ -342,5 +341,10 @@ namespace munchkin_card_editor
             }
             RefreshListbox();
         }
+
+        private void cardTitleTextBox_KeyUp(object sender, KeyEventArgs e) => UpdateDisplayedImage();
+        private void cardDescriptionTextBox_KeyUp(object sender, KeyEventArgs e) => UpdateDisplayedImage();
+        private void cardStyleComboBox_SelectedIndexChanged(object sender, EventArgs e) => UpdateDisplayedImage();
+        private void cardCategoryComboBox_SelectedIndexChanged(object sender, EventArgs e) => UpdateDisplayedImage();
     }
 }
