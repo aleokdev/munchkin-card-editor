@@ -110,14 +110,8 @@ namespace munchkin_card_editor
         public string Description { get; set; }
         public string ScriptPath { get; set; }
         public CardCategory Category { get; set; }
-        public Bitmap EditedImage { get; set; }
+        public Bitmap EditedImage => Style.GetEditedFrontImageFor(this);
         public ICardStyle Style { get; set; } = new OriginalDungeonStyle();
-
-        public void UpdateImage()
-        {
-            EditedImage?.Dispose();
-            EditedImage = Style.GetEditedFrontImageFor(this);
-        }
 
         public void SetStyleFromString(string str)
         {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
@@ -16,13 +17,36 @@ namespace munchkin_card_editor
     {
         string cardpackPath = null;
         CardpackData data = new CardpackData();
+        Card[] _cardsEditing;
+        Card[] cardsEditing
+        {
+            get => _cardsEditing;
+            set
+            {
+                if (_cardsEditing != null)
+                    foreach(Card card in _cardsEditing)
+                        UpdateCardMembers(card);
+                _cardsEditing = value;
+                UpdateCardDisplayedData();
+            }
+        }
+        Card cardEditing
+        {
+            get
+            {
+                if (_cardsEditing == null || _cardsEditing.Length == 0)
+                    return null;
+                else
+                    return _cardsEditing[0];
+            }
+        }
 
         public MainForm()
         {
             InitializeComponent();
 
             displayerStopwatch.Start();
-            cardDisplayTimer.Tick += (object o, EventArgs e) => UpdateCardMembers((Card)cardListBox.SelectedItem);
+            cardDisplayTimer.Tick += (object o, EventArgs e) => UpdateDisplayedImage();
             cardDisplayTimer.Start();
 
             foreach (Type style in from type in Assembly.GetExecutingAssembly().GetTypes()
@@ -44,7 +68,6 @@ namespace munchkin_card_editor
         private void addCardToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Card card = new Card { Title = "New card", Description = "This is a description" };
-            card.UpdateImage();
             data.Cards.Add(card);
             RefreshListbox();
         }
@@ -58,37 +81,53 @@ namespace munchkin_card_editor
 
         private void UpdateCardMembers(Card card)
         {
+            Console.WriteLine("Updated members of " + card.ToString());
             if (card == null) return;
 
-            if (card.Title != cardTitleTextBox.Text || card.Description != cardDescriptionTextBox.Text)
-            {
-                if (cardTitleTextBox.Text != multiValueSelectionIndicator)
-                    card.Title = cardTitleTextBox.Text;
-                if (cardDescriptionTextBox.Text != multiValueSelectionIndicator)
-                    card.Description = cardDescriptionTextBox.Text;
-                card.UpdateImage();
-                cardPictureBox.Image = card.EditedImage;
-            }
-
+            if (cardTitleTextBox.Text != multiValueSelectionIndicator)
+                card.Title = cardTitleTextBox.Text;
+            if (cardDescriptionTextBox.Text != multiValueSelectionIndicator)
+                card.Description = cardDescriptionTextBox.Text;
             if (cardScriptComboBox.Text != multiValueSelectionIndicator)
                 card.ScriptPath = cardScriptComboBox.Text;
             if (cardStyleComboBox.SelectedItem != null)
                 card.Style = (ICardStyle)Activator.CreateInstance(((EncapsulatedCardStyleType)cardStyleComboBox.SelectedItem).Type);
         }
 
+        private void UpdateDisplayedImage()
+        {
+            Card card = cardEditing;
+            if (card == null) return;
+
+            if (card.Title != cardTitleTextBox.Text || card.Description != cardDescriptionTextBox.Text)
+            {
+                Console.WriteLine("NOT THE SAME; Updating preview");
+                Card preview = new Card
+                {
+                    Title = cardTitleTextBox.Text,
+                    Description = cardDescriptionTextBox.Text
+                };
+
+                cardPictureBox.Image?.Dispose();
+                cardPictureBox.Image = preview.EditedImage;
+            }
+        }
+
         private void UpdateCardDisplayedData()
         {
+            if (cardsEditing == null) return;
+
             Console.WriteLine("Changed!");
-            if (cardListBox.SelectedIndices.Count == 1)
+            if (cardsEditing.Length == 1)
             {
-                Card card = (Card)cardListBox.SelectedItem;
+                Card card = cardEditing;
                 if (card == null) return;
 
-                card.UpdateImage();
-                cardPictureBox.Image = card.EditedImage;
                 cardTitleTextBox.Text = card.Title;
                 cardDescriptionTextBox.Text = card.Description;
                 cardScriptComboBox.Text = card.ScriptPath;
+                cardPictureBox.Image?.Dispose();
+                cardPictureBox.Image = card.EditedImage;
 
                 foreach (var t in cardStyleComboBox.Items.Cast<EncapsulatedCardStyleType>())
                     if (t.Type.Equals(card.Style.GetType()))
@@ -97,26 +136,26 @@ namespace munchkin_card_editor
                         break;
                     }
             }
-            else if (cardListBox.SelectedIndices.Count > 1)
+            else if (cardsEditing.Length > 1)
             {
-                string commonTitle = ((Card)cardListBox.SelectedItem).Title;
-                foreach (Card card in cardListBox.SelectedItems.Cast<Card>())
+                string commonTitle = cardEditing.Title;
+                foreach (Card card in cardsEditing)
                 {
                     if (commonTitle != card.Title)
                         commonTitle = multiValueSelectionIndicator;
                 }
                 cardTitleTextBox.Text = commonTitle;
 
-                string commonDescription = ((Card)cardListBox.SelectedItem).Description;
-                foreach (Card card in cardListBox.SelectedItems.Cast<Card>())
+                string commonDescription = cardEditing.Description;
+                foreach (Card card in cardsEditing)
                 {
                     if (commonDescription != card.Description)
                         commonDescription = multiValueSelectionIndicator;
                 }
                 cardDescriptionTextBox.Text = commonDescription;
 
-                string commonScript = ((Card)cardListBox.SelectedItem).ScriptPath;
-                foreach (Card card in cardListBox.SelectedItems.Cast<Card>())
+                string commonScript = cardEditing.ScriptPath;
+                foreach (Card card in cardsEditing)
                 {
                     if (commonScript != card.ScriptPath)
                         commonScript = multiValueSelectionIndicator;
@@ -148,15 +187,11 @@ namespace munchkin_card_editor
 
         Stopwatch displayerStopwatch = new Stopwatch();
 
-        Card[] lastSelectedCards;
         private void cardListBox_SelectedValueChanged(object sender, EventArgs e)
         {
-            if (lastSelectedCards != null)
-                foreach(Card card in lastSelectedCards)
-                    UpdateCardMembers(card);
-            UpdateCardDisplayedData();
-
-            lastSelectedCards = cardListBox.SelectedItems.Cast<Card>().ToArray();
+            Card[] newCards = new Card[cardListBox.SelectedIndices.Count];
+            cardListBox.SelectedItems.CopyTo(newCards, 0);
+            cardsEditing = newCards;
         }
 
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
@@ -240,7 +275,7 @@ namespace munchkin_card_editor
                 Directory.CreateDirectory(textureCacheDir);
 
             // Delete old textures
-            foreach(string path in Directory.EnumerateFiles(textureCacheDir, "*.png", SearchOption.TopDirectoryOnly))
+            foreach (string path in Directory.EnumerateFiles(textureCacheDir, "*.png", SearchOption.TopDirectoryOnly))
             {
                 File.Delete(path);
             }
@@ -252,13 +287,12 @@ namespace munchkin_card_editor
             uint uid = 0;
             foreach (Card card in data.Cards)
             {
-                card.UpdateImage();
-
                 string titleFilename = new string((from c in card.Title.Replace(" ", "_") where !Path.GetInvalidFileNameChars().Contains(c) select c).ToArray()).ToLower();
                 string textureFilename = textureCacheDir + (++uid).ToString() + "_" + titleFilename + ".png";
                 using (var f = new FileStream(textureFilename, FileMode.CreateNew))
                 {
-                    card.EditedImage.Save(f, ImageFormat.Png);
+                    using (Bitmap img = card.EditedImage)
+                        img.Save(f, ImageFormat.Png);
                 }
 
                 texturePaths.Add(card, textureFilename);
@@ -299,7 +333,7 @@ namespace munchkin_card_editor
             int offset = 0;
             foreach (int index in cardListBox.SelectedIndices)
             {
-                data.Cards.RemoveAt(index-offset);
+                data.Cards.RemoveAt(index - offset);
                 offset++;
             }
             RefreshListbox();
