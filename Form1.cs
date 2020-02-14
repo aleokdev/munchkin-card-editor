@@ -55,6 +55,8 @@ namespace munchkin_card_editor
             {
                 cardStyleComboBox.Items.Add(new EncapsulatedCardStyleType(style));
             }
+            cardCategoryComboBox.Items.Add(CardCategory.Dungeon);
+            cardCategoryComboBox.Items.Add(CardCategory.Treasure);
 
             RefreshListbox();
         }
@@ -90,6 +92,7 @@ namespace munchkin_card_editor
                 card.Description = cardDescriptionTextBox.Text;
             if (cardScriptComboBox.Text != multiValueSelectionIndicator)
                 card.ScriptPath = cardScriptComboBox.Text;
+            card.Category = (CardCategory)cardCategoryComboBox.SelectedItem;
             if (cardStyleComboBox.SelectedItem != null)
                 card.Style = (ICardStyle)Activator.CreateInstance(((EncapsulatedCardStyleType)cardStyleComboBox.SelectedItem).Type);
         }
@@ -126,6 +129,7 @@ namespace munchkin_card_editor
                 cardTitleTextBox.Text = card.Title;
                 cardDescriptionTextBox.Text = card.Description;
                 cardScriptComboBox.Text = card.ScriptPath;
+                cardCategoryComboBox.SelectedItem = card.Category;
                 cardPictureBox.Image?.Dispose();
                 cardPictureBox.Image = card.EditedImage;
 

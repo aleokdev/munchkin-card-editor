@@ -32,6 +32,7 @@
             System.Windows.Forms.Label label1;
             System.Windows.Forms.Label label2;
             System.Windows.Forms.Label label4;
+            System.Windows.Forms.Label label5;
             this.cardListBox = new System.Windows.Forms.ListBox();
             this.cardListBoxContextStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addCardCtxItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -49,9 +50,11 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cardCategoryComboBox = new System.Windows.Forms.ComboBox();
             label1 = new System.Windows.Forms.Label();
             label2 = new System.Windows.Forms.Label();
             label4 = new System.Windows.Forms.Label();
+            label5 = new System.Windows.Forms.Label();
             this.cardListBoxContextStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -82,7 +85,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new System.Drawing.Point(31, 512);
+            label4.Location = new System.Drawing.Point(31, 539);
             label4.Name = "label4";
             label4.Size = new System.Drawing.Size(59, 13);
             label4.TabIndex = 8;
@@ -98,7 +101,7 @@
             this.cardListBox.Location = new System.Drawing.Point(5, 4);
             this.cardListBox.Name = "cardListBox";
             this.cardListBox.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.cardListBox.Size = new System.Drawing.Size(517, 719);
+            this.cardListBox.Size = new System.Drawing.Size(517, 706);
             this.cardListBox.TabIndex = 0;
             this.cardListBox.SelectedValueChanged += new System.EventHandler(this.cardListBox_SelectedValueChanged);
             // 
@@ -108,7 +111,7 @@
             this.addCardCtxItem,
             this.deleteCardCtxItem});
             this.cardListBoxContextStrip.Name = "cardListBoxContextStrip";
-            this.cardListBoxContextStrip.Size = new System.Drawing.Size(181, 70);
+            this.cardListBoxContextStrip.Size = new System.Drawing.Size(125, 48);
             this.cardListBoxContextStrip.Opening += new System.ComponentModel.CancelEventHandler(this.cardListBoxContextStrip_Opening);
             // 
             // addCardCtxItem
@@ -121,7 +124,7 @@
             // deleteCardCtxItem
             // 
             this.deleteCardCtxItem.Name = "deleteCardCtxItem";
-            this.deleteCardCtxItem.Size = new System.Drawing.Size(180, 22);
+            this.deleteCardCtxItem.Size = new System.Drawing.Size(124, 22);
             this.deleteCardCtxItem.Text = "Delete";
             this.deleteCardCtxItem.Click += new System.EventHandler(this.deleteCardCtxItem_Click);
             // 
@@ -141,6 +144,8 @@
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(label5);
+            this.splitContainer1.Panel2.Controls.Add(this.cardCategoryComboBox);
             this.splitContainer1.Panel2.Controls.Add(label4);
             this.splitContainer1.Panel2.Controls.Add(this.cardScriptComboBox);
             this.splitContainer1.Panel2.Controls.Add(this.cardStyleComboBox);
@@ -150,7 +155,7 @@
             this.splitContainer1.Panel2.Controls.Add(this.cardTitleTextBox);
             this.splitContainer1.Panel2.Controls.Add(label1);
             this.splitContainer1.Panel2.Controls.Add(this.cardPictureBox);
-            this.splitContainer1.Size = new System.Drawing.Size(868, 763);
+            this.splitContainer1.Size = new System.Drawing.Size(868, 755);
             this.splitContainer1.SplitterDistance = 525;
             this.splitContainer1.TabIndex = 1;
             // 
@@ -158,7 +163,7 @@
             // 
             this.pBarText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.pBarText.AutoSize = true;
-            this.pBarText.Location = new System.Drawing.Point(123, 734);
+            this.pBarText.Location = new System.Drawing.Point(123, 726);
             this.pBarText.Name = "pBarText";
             this.pBarText.Size = new System.Drawing.Size(50, 13);
             this.pBarText.TabIndex = 4;
@@ -169,7 +174,7 @@
             // pBar
             // 
             this.pBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.pBar.Location = new System.Drawing.Point(5, 732);
+            this.pBar.Location = new System.Drawing.Point(5, 724);
             this.pBar.Name = "pBar";
             this.pBar.Size = new System.Drawing.Size(112, 17);
             this.pBar.TabIndex = 3;
@@ -182,7 +187,7 @@
             this.cardScriptComboBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
             this.cardScriptComboBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.cardScriptComboBox.FormattingEnabled = true;
-            this.cardScriptComboBox.Location = new System.Drawing.Point(96, 509);
+            this.cardScriptComboBox.Location = new System.Drawing.Point(96, 536);
             this.cardScriptComboBox.Name = "cardScriptComboBox";
             this.cardScriptComboBox.Size = new System.Drawing.Size(234, 21);
             this.cardScriptComboBox.TabIndex = 7;
@@ -191,6 +196,7 @@
             // 
             this.cardStyleComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.cardStyleComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cardStyleComboBox.FormattingEnabled = true;
             this.cardStyleComboBox.Location = new System.Drawing.Point(96, 482);
             this.cardStyleComboBox.Name = "cardStyleComboBox";
@@ -265,11 +271,30 @@
             this.loadToolStripMenuItem.Text = "Load";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
             // 
+            // cardCategoryComboBox
+            // 
+            this.cardCategoryComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cardCategoryComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cardCategoryComboBox.Location = new System.Drawing.Point(96, 509);
+            this.cardCategoryComboBox.Name = "cardCategoryComboBox";
+            this.cardCategoryComboBox.Size = new System.Drawing.Size(234, 21);
+            this.cardCategoryComboBox.TabIndex = 9;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new System.Drawing.Point(16, 512);
+            label5.Name = "label5";
+            label5.Size = new System.Drawing.Size(74, 13);
+            label5.TabIndex = 10;
+            label5.Text = "Card Category";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(892, 787);
+            this.ClientSize = new System.Drawing.Size(892, 779);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.splitContainer1);
             this.MainMenuStrip = this.menuStrip1;
@@ -309,6 +334,7 @@
         private System.Windows.Forms.ComboBox cardScriptComboBox;
         private System.Windows.Forms.ProgressBar pBar;
         private System.Windows.Forms.Label pBarText;
+        private System.Windows.Forms.ComboBox cardCategoryComboBox;
     }
 }
 
