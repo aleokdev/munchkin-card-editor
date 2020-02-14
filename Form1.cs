@@ -215,7 +215,7 @@ namespace munchkin_card_editor
 
             // TODO: Set cardpack back texture from somewhere in the application
             string styleFilename = new string((from c in ((Card)cardListBox.Items[0]).Style.GetType().Name where !Path.GetInvalidFileNameChars().Contains(c) select c).ToArray()).ToLower();
-            const string backTextureFilename = "textures/dungeon_back.png";
+            const string backTextureFilename = "textures/dungeon-back.png";
             if (!File.Exists(Path.Combine(cardpackPath, backTextureFilename)))
             {
                 using (var f = new FileStream(Path.Combine(cardpackPath, backTextureFilename), FileMode.Create))
