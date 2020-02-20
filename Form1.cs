@@ -346,5 +346,17 @@ namespace munchkin_card_editor
         private void cardDescriptionTextBox_KeyUp(object sender, KeyEventArgs e) => UpdateDisplayedImage();
         private void cardStyleComboBox_SelectedIndexChanged(object sender, EventArgs e) => UpdateDisplayedImage();
         private void cardCategoryComboBox_SelectedIndexChanged(object sender, EventArgs e) => UpdateDisplayedImage();
+
+        private void cardListBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (cardListBox.SelectedItem == null) return;
+
+            if (e.KeyCode == Keys.Delete)
+            {
+                data.Cards.RemoveAt(cardListBox.SelectedIndex);
+
+                RefreshListbox();
+            }
+        }
     }
 }

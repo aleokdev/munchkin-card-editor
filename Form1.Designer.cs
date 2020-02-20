@@ -109,9 +109,10 @@
             this.cardListBox.Location = new System.Drawing.Point(5, 4);
             this.cardListBox.Name = "cardListBox";
             this.cardListBox.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.cardListBox.Size = new System.Drawing.Size(517, 693);
+            this.cardListBox.Size = new System.Drawing.Size(517, 667);
             this.cardListBox.TabIndex = 0;
             this.cardListBox.SelectedValueChanged += new System.EventHandler(this.cardListBox_SelectedValueChanged);
+            this.cardListBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cardListBox_KeyDown);
             // 
             // cardListBoxContextStrip
             // 
@@ -163,7 +164,7 @@
             this.splitContainer1.Panel2.Controls.Add(this.cardTitleTextBox);
             this.splitContainer1.Panel2.Controls.Add(label1);
             this.splitContainer1.Panel2.Controls.Add(this.cardPictureBox);
-            this.splitContainer1.Size = new System.Drawing.Size(868, 747);
+            this.splitContainer1.Size = new System.Drawing.Size(868, 731);
             this.splitContainer1.SplitterDistance = 525;
             this.splitContainer1.TabIndex = 1;
             // 
@@ -171,7 +172,7 @@
             // 
             this.pBarText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.pBarText.AutoSize = true;
-            this.pBarText.Location = new System.Drawing.Point(123, 718);
+            this.pBarText.Location = new System.Drawing.Point(123, 702);
             this.pBarText.Name = "pBarText";
             this.pBarText.Size = new System.Drawing.Size(50, 13);
             this.pBarText.TabIndex = 4;
@@ -182,7 +183,7 @@
             // pBar
             // 
             this.pBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.pBar.Location = new System.Drawing.Point(5, 716);
+            this.pBar.Location = new System.Drawing.Point(5, 700);
             this.pBar.Name = "pBar";
             this.pBar.Size = new System.Drawing.Size(112, 17);
             this.pBar.TabIndex = 3;
@@ -293,7 +294,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(892, 771);
+            this.ClientSize = new System.Drawing.Size(892, 755);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.splitContainer1);
             this.MainMenuStrip = this.menuStrip1;
