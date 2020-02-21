@@ -33,6 +33,7 @@
             System.Windows.Forms.Label label2;
             System.Windows.Forms.Label label4;
             System.Windows.Forms.Label label5;
+            System.Windows.Forms.Label label6;
             this.cardListBox = new System.Windows.Forms.ListBox();
             this.cardListBoxContextStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addCardCtxItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -50,10 +51,12 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cardPropertiesLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             label1 = new System.Windows.Forms.Label();
             label2 = new System.Windows.Forms.Label();
             label4 = new System.Windows.Forms.Label();
             label5 = new System.Windows.Forms.Label();
+            label6 = new System.Windows.Forms.Label();
             this.cardListBoxContextStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -153,6 +156,8 @@
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.cardPropertiesLayoutPanel);
+            this.splitContainer1.Panel2.Controls.Add(label6);
             this.splitContainer1.Panel2.Controls.Add(label5);
             this.splitContainer1.Panel2.Controls.Add(this.cardCategoryComboBox);
             this.splitContainer1.Panel2.Controls.Add(label4);
@@ -206,11 +211,13 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cardScriptComboBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
             this.cardScriptComboBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cardScriptComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cardScriptComboBox.FormattingEnabled = true;
             this.cardScriptComboBox.Location = new System.Drawing.Point(96, 536);
             this.cardScriptComboBox.Name = "cardScriptComboBox";
             this.cardScriptComboBox.Size = new System.Drawing.Size(234, 21);
             this.cardScriptComboBox.TabIndex = 7;
+            this.cardScriptComboBox.SelectionChangeCommitted += new System.EventHandler(this.cardScriptComboBox_SelectedIndexChanged);
             // 
             // cardStyleComboBox
             // 
@@ -290,6 +297,31 @@
             this.loadToolStripMenuItem.Text = "Load";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
             // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Location = new System.Drawing.Point(11, 564);
+            label6.Name = "label6";
+            label6.Size = new System.Drawing.Size(79, 13);
+            label6.TabIndex = 11;
+            label6.Text = "Card Properties";
+            // 
+            // cardPropertiesLayoutPanel
+            // 
+            this.cardPropertiesLayoutPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cardPropertiesLayoutPanel.AutoScroll = true;
+            this.cardPropertiesLayoutPanel.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.OutsetPartial;
+            this.cardPropertiesLayoutPanel.ColumnCount = 1;
+            this.cardPropertiesLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.cardPropertiesLayoutPanel.Location = new System.Drawing.Point(14, 581);
+            this.cardPropertiesLayoutPanel.Name = "cardPropertiesLayoutPanel";
+            this.cardPropertiesLayoutPanel.RowCount = 1;
+            this.cardPropertiesLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.cardPropertiesLayoutPanel.Size = new System.Drawing.Size(316, 135);
+            this.cardPropertiesLayoutPanel.TabIndex = 13;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -334,6 +366,7 @@
         private System.Windows.Forms.ProgressBar pBar;
         private System.Windows.Forms.Label pBarText;
         private System.Windows.Forms.ComboBox cardCategoryComboBox;
+        private System.Windows.Forms.TableLayoutPanel cardPropertiesLayoutPanel;
     }
 }
 

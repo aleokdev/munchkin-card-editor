@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -24,7 +23,7 @@ namespace munchkin_card_editor
             set
             {
                 if (_cardsEditing != null)
-                    foreach(Card card in _cardsEditing)
+                    foreach (Card card in _cardsEditing)
                         UpdateCardMembers(card);
                 _cardsEditing = value;
                 UpdateCardDisplayedData();
@@ -125,6 +124,8 @@ namespace munchkin_card_editor
                 cardCategoryComboBox.SelectedItem = card.Category;
                 cardPictureBox.Image?.Dispose();
                 cardPictureBox.Image = card.EditedImage;
+
+                updatePropertiesListBox();
 
                 foreach (var t in cardStyleComboBox.Items.Cast<EncapsulatedCardStyleType>())
                     if (t.Type.Equals(card.Style.GetType()))
@@ -314,6 +315,7 @@ namespace munchkin_card_editor
                 data.Add("style", card.Style.GetType().Name);
                 data.Add("script", card.ScriptPath);
                 data.Add("front_texture", texturePaths[card]);
+                data.Add("properties", card.Properties);
                 pBar.PerformStep();
                 cardJsonList.Add(data);
             }
@@ -343,8 +345,11 @@ namespace munchkin_card_editor
         }
 
         private void cardTitleTextBox_KeyUp(object sender, KeyEventArgs e) => UpdateDisplayedImage();
+
         private void cardDescriptionTextBox_KeyUp(object sender, KeyEventArgs e) => UpdateDisplayedImage();
+
         private void cardStyleComboBox_SelectedIndexChanged(object sender, EventArgs e) => UpdateDisplayedImage();
+
         private void cardCategoryComboBox_SelectedIndexChanged(object sender, EventArgs e) => UpdateDisplayedImage();
 
         private void cardListBox_KeyDown(object sender, KeyEventArgs e)
@@ -357,6 +362,79 @@ namespace munchkin_card_editor
 
                 RefreshListbox();
             }
+        }
+
+        private void cardScriptComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            cardEditing.ScriptPath = (string)cardScriptComboBox.SelectedValue;
+            updatePropertiesListBox();
+        }
+
+        private void updatePropertiesListBox()
+        {
+            if (string.IsNullOrEmpty(cardEditing.ScriptPath))
+            {
+                cardPropertiesLayoutPanel.Controls.Clear();
+                cardPropertiesLayoutPanel.RowCount = 0;
+                cardPropertiesLayoutPanel.Enabled = false;
+                return;
+            }
+
+            using (StreamReader fs = File.OpenText(Path.Combine(cardpackPath, cardEditing.ScriptPath)))
+            {
+                cardPropertiesLayoutPanel.Controls.Clear();
+                if (fs.ReadLine().TrimStart(' ') == "-- #EDITOR_PROPERTIES")
+                {
+                    cardPropertiesLayoutPanel.Enabled = true;
+                    cardPropertiesLayoutPanel.RowStyles[0].SizeType = SizeType.AutoSize;
+
+                    cardPropertiesLayoutPanel.RowCount = 0;
+                    int i = 0;
+                    while (!fs.EndOfStream)
+                    {
+                        string line = fs.ReadLine().Trim(' ');
+
+                        if (line.StartsWith("-- #PROPERTY"))
+                        {
+                            // Read script property
+                            string property_name = line.Remove(0, "-- #PROPERTY".Length).TrimStart(' ');
+
+                            string property_value = "";
+                            if (cardEditing.Properties.ContainsKey(property_name))
+                                property_value = cardEditing.Properties[property_name].ToString();
+                            else
+                                cardEditing.Properties.Add(property_name, property_value);
+                            Label label = new Label() { Text = property_name };
+                            TextBox textbox = new TextBox() { Text = property_value };
+                            textbox.TextChanged += (object sender, EventArgs _) => updateProperty(property_name, ((TextBox)sender).Text);
+                            FlowLayoutPanel layout = new FlowLayoutPanel() { Parent = cardPropertiesLayoutPanel, FlowDirection = FlowDirection.LeftToRight, AutoSize = true };
+                            layout.Controls.Add(label);
+                            layout.Controls.Add(textbox);
+                            cardPropertiesLayoutPanel.RowCount++;
+                            cardPropertiesLayoutPanel.SetRow(layout, i);
+                        }
+                        else return;
+                        i++;
+                    }
+                }
+                else
+                {
+                    cardPropertiesLayoutPanel.Controls.Clear();
+                    cardPropertiesLayoutPanel.RowCount = 0;
+                    cardPropertiesLayoutPanel.Enabled = false;
+                    return;
+                }
+            }
+        }
+
+        private void updateProperty(string propertyName, string newData)
+        {
+            if(int.TryParse(newData, out int parsedIntData))
+                cardEditing.Properties[propertyName] = parsedIntData;
+            else if(bool.TryParse(newData, out bool parsedBoolData))
+                cardEditing.Properties[propertyName] = parsedBoolData;
+            else
+                cardEditing.Properties[propertyName] = newData;
         }
     }
 }

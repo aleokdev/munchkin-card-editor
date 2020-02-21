@@ -130,6 +130,7 @@ namespace munchkin_card_editor
         public CardCategory Category { get; set; }
         public Bitmap EditedImage => Style.GetEditedFrontImageFor(this);
         public ICardStyle Style { get; set; } = new OriginalStyle();
+        public Dictionary<string, object> Properties { get; set; } = new Dictionary<string, object>();
 
         public void SetStyleFromString(string str)
         {
@@ -149,6 +150,7 @@ namespace munchkin_card_editor
             Description = (string)data.GetOrNull("description") ?? "Card Description";
             ScriptPath = (string)data.GetOrNull("script") ?? "";
             Category = (string)data.GetOrNull("category") == "treasure" ? CardCategory.Treasure : CardCategory.Dungeon;
+            Properties = (Dictionary<string,object>)data.GetOrNull("properties") ?? new Dictionary<string, object>();
         }
         public override string ToString() => Title;
     }
