@@ -383,6 +383,8 @@ namespace munchkin_card_editor
             using (StreamReader fs = File.OpenText(Path.Combine(cardpackPath, cardEditing.ScriptPath)))
             {
                 cardPropertiesLayoutPanel.Controls.Clear();
+                if (fs.EndOfStream) return;
+
                 if (fs.ReadLine().TrimStart(' ') == "-- #EDITOR_PROPERTIES")
                 {
                     cardPropertiesLayoutPanel.Enabled = true;
@@ -435,6 +437,32 @@ namespace munchkin_card_editor
                 cardEditing.Properties[propertyName] = parsedBoolData;
             else
                 cardEditing.Properties[propertyName] = newData;
+        }
+
+        private void pasteFromClipboardToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!Clipboard.ContainsText())
+                return;
+
+            foreach (string crdn in Clipboard.GetText().Split('\n'))
+            {
+                // Remove chars that might appear at the end of some cardnames on some places, like https://munchkin.game/products/games/munchkin/
+                string cardname = crdn.TrimEnd('*', '†', ' ', '\r'); 
+                if (cardname.EndsWith(")"))
+                {
+                    string parse_str = cardname.Remove(0, cardname.LastIndexOf('(')+1).TrimEnd(')');
+                    if (int.TryParse(parse_str, out int times))
+                    {
+                        for(int i = 0; i < times; i++)
+                            data.Cards.Add(new Card() { Title = cardname.Substring(0, cardname.LastIndexOf('(')) });
+                    }
+                    else
+                        data.Cards.Add(new Card() { Title = cardname });
+                }
+                else
+                    data.Cards.Add(new Card() { Title = cardname });
+            }
+            RefreshListbox();
         }
     }
 }
